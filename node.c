@@ -97,7 +97,9 @@ void delete(int key)
 
     if(current->key==key)
     {
+        struct node *old = head;
         head = head->next;
+        free(old);
         printf("Node Deleted\n");
     }
     else{
@@ -108,7 +110,9 @@ void delete(int key)
         }
         if(next->key == key)
         {
+            struct node *old = next;
             current->next = next->next;
+            free(old);
             printf("Node Deleted\n");
         }
         else
