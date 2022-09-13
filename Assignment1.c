@@ -111,14 +111,17 @@ void deleteAll(int value)
     {
         struct node *old = head;
         head = head->next;
+        current = head;
+        next = head->next;
         free(old);
     }
-    while(next!= NULL)
+    while(next != NULL)
     {
-        if(next->value == value)
+        while(current != NULL && next->value == value)
         {
             struct node *old = next;
             current->next = next->next;
+            next = current->next;
             free(old);
         }
         current = next;
