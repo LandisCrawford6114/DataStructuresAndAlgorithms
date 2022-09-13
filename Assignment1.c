@@ -82,13 +82,14 @@ void delete(int reading_date, int reading_time)
         free(old);
         printf("Entry Deleted\n\n");
     }
-    else{
+    else
+    {
         while(next != NULL && next->reading_date != reading_date && next->reading_time != reading_time)
         {
             current = next;
             next = next->next;
         }
-        if(next->reading_date == reading_date && next->reading_time != reading_time)
+        if(next->reading_date == reading_date && next->reading_time == reading_time)
         {
             struct node *old = next;
             current->next = next->next;
