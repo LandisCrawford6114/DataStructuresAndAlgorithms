@@ -33,6 +33,13 @@ void insert(int reading_date, int reading_time, int value)
 //delete a node with specific date and time
 void delete(int reading_date, int reading_time)
 {
+    //makes sure list isn't empty
+    if(head == NULL)
+    {
+        printf("List already empty\n\n");
+        return;
+    }
+
     //creates next node
     struct node *next = head->next;
     current = head;
@@ -182,89 +189,66 @@ int main()
     insert(7,8,9);
     insert(1,0,3);*/
 
-    while(input != 5)
+    while(input != 8)
     {
-        //prints menu
-        printf("1-Insert\n");
-        printf("2-Delete\n");
-        printf("3-Search\n");
-        printf("4-Print\n");
-        printf("5-Exit\n");
-        //asks for choice
-        printf("Your Choice: ");
+        printf("Welcome to sensory reading system\n");
+        printf("1- Add a sensory reading\n");
+        printf("2- Remove a sensory reading based on specific date and time\n");
+        printf("3- Remove all sensory readings with a specific value\n");
+        printf("4- Search for a specific sensory reading value\n");
+        printf("5- Print information of all sensory readings\n");
+        printf("6- Print the number of sensory readings saved in the system\n");
+        printf("7- Print the average of all sensory reading values\n");
+        printf("8- Exit\n");
+        printf("Your choice: ");
         scanf("%d", &input);
-        printf("\n");
+
         if(input == 1)
         {
-            //Insert
-            printf("Reading Date: ");
-            scanf("%d", &reading_date);
-            printf("Reading Time: ");
-            scanf("%d", &reading_time);
-            printf("Value: ");
-            scanf("%d", &value);
-            insert(reading_date,reading_time,value);
-            printf("\n");
-        }
-        else if(input == 2)
-        {
-            //Delete
-            printf("1-Delete one entry\n");
-            printf("2-Delete multiple entries\n");
-            printf("Your Choice: ");
-            scanf("%d", &deleteType);
-            printf("\n");
-            if(deleteType == 1)
-            {
-                //Delete One Node
+                //Insert
                 printf("Reading Date: ");
                 scanf("%d", &reading_date);
                 printf("Reading Time: ");
                 scanf("%d", &reading_time);
-                printf("\n");
-                delete(reading_date,reading_time);
-            }
-            else if(deleteType == 2)
-            {
-                //Delete Multiple Nodes
                 printf("Value: ");
                 scanf("%d", &value);
+                insert(reading_date,reading_time,value);
                 printf("\n");
-                deleteAll(value);
-            }
+        }
+        else if(input == 2)
+        {
+            printf("Reading Date: ");
+            scanf("%d", &reading_date);
+            printf("Reading Time: ");
+            scanf("%d", &reading_time);
+            printf("\n");
+            delete(reading_date,reading_time);
         }
         else if(input == 3)
         {
-            //Search
+            printf("Value: ");
+            scanf("%d", &value);
+            printf("\n");
+            deleteAll(value);
+        }
+        else if(input == 4)
+        {
             printf("Value: ");
             scanf("%d", &value);
             printf("\n");
             search(value);
         }
-        else if(input == 4)
+        else if(input == 5)
         {
-            //Print
-            printf("1-Print List\n");
-            printf("2-Print Length\n");
-            printf("3-Print Average\n");
-            printf("Your Choice: ");
-            scanf("%d", &printType);
-            printf("\n");
-            if(printType == 1)
-            {
-                //Print List
-                print();
-            }
-            else if(printType == 2)
-            {
-                //Print Length
-                length();
-            }
-            else if(printType == 3)
-            {
-                //Print Average
-                average();
-            }
+            print();
+        }
+        else if(input == 6)
+        {
+            length();
+        }
+        else if(input == 7)
+        {
+            average();
         }
     }
     return 0;
