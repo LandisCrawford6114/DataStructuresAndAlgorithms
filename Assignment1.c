@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Create node
 struct node {
     int reading_date;
     int reading_time;
@@ -11,6 +12,7 @@ struct node {
 struct node *head = NULL;
 struct node *current = NULL;
 
+//insert a node
 void insert(int reading_date, int reading_time, int value)
 {
     //Reserve memory
@@ -70,6 +72,7 @@ void insert(int reading_date, int reading_time, int value)
 //     }
 // }
 
+//delete a node with specific date and time
 void delete(int reading_date, int reading_time)
 {
     struct node *next = head->next;
@@ -104,6 +107,7 @@ void delete(int reading_date, int reading_time)
 
 }
 
+//delete all nodes with specific value
 void deleteAll(int value)
 {
     struct node *next = head->next;
@@ -135,6 +139,7 @@ void deleteAll(int value)
     
 }
 
+//search for node with specific value
 void search(int value)
 {
     current = head;
@@ -153,6 +158,7 @@ void search(int value)
     printf("Search Completed\n\n");
 }
 
+//print all nodes in list
 void print()
 {
     current = head;
@@ -164,6 +170,7 @@ void print()
     printf("\n");
 }
 
+//print number of nodes in list
 void length()
 {
     int length = 0;
@@ -176,6 +183,7 @@ void length()
     printf("Length: %d \n\n",length);
 }
 
+//print average value of all nodes
 void average()
 {
     current = head;
@@ -193,6 +201,12 @@ void average()
 int main()
 {
     int input, reading_date, reading_time, value, deleteType, printType;
+    insert(1,2,3);
+    insert(4,5,6);
+    insert(4,5,3);
+    insert(7,8,3);
+    insert(7,8,9);
+    insert(1,0,3);
     while(input != 5)
     {
         printf("1-Insert\n");
