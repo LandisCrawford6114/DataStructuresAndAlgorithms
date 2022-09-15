@@ -9,6 +9,7 @@ struct node {
     struct node *next;
 };
 
+//creates head and current nodes
 struct node *head = NULL;
 struct node *current = NULL;
 
@@ -28,56 +29,14 @@ void insert(int reading_date, int reading_time, int value)
     head = new;
 }
 
-// void insertEnd(int key, int data)
-// {
-//     //Reserve memory
-//     struct node *new = (struct node*)malloc(sizeof(struct node));
-    
-//     //Fill data
-//     new->key = key;
-//     new->data = data;
-
-//     //Connect node
-//     current = head;
-//     while(current->next != NULL)
-//     {
-//         current = current->next;
-//     }
-//     current->next = new;
-// }
-
-// void insertAt(int key, int data, int location)
-// {
-//     //Reserve memory
-//     struct node *new = (struct node*)malloc(sizeof(struct node));
-    
-//     //Fill data
-//     new->key = key;
-//     new->data = data;
-
-//     //Connect node
-//     current = head;
-//     while(current->next != NULL && current->key != location)
-//     {
-//         current = current->next;
-//     }
-//     if(current->key == location)
-//     {
-//         new->next = current->next;
-//         current->next = new;
-//     }
-//     else
-//     {
-//         printf("Insertion failed: key not found");
-//     }
-// }
-
 //delete a node with specific date and time
 void delete(int reading_date, int reading_time)
 {
+    //creates next node
     struct node *next = head->next;
     current = head;
 
+    //checks head node
     if(current->reading_date==reading_date && current->reading_time==reading_time)
     {
         struct node *old = head;
@@ -87,13 +46,16 @@ void delete(int reading_date, int reading_time)
     }
     else
     {
+        //cycles until it finds the correct node to delete
         while(next != NULL && next->reading_date != reading_date && next->reading_time != reading_time)
         {
             current = next;
             next = next->next;
         }
+        //checks to make sure found the correct node and not the end of the list
         if(next->reading_date == reading_date && next->reading_time == reading_time)
         {
+            //steps around the node to delete
             struct node *old = next;
             current->next = next->next;
             free(old);
@@ -101,6 +63,7 @@ void delete(int reading_date, int reading_time)
         }
         else
         {
+            //node to delete doesn't exist
             printf("Delete failed: entry not found\n\n");
         }
     }
@@ -110,11 +73,14 @@ void delete(int reading_date, int reading_time)
 //delete all nodes with specific value
 void deleteAll(int value)
 {
+    //makes sure list isn't empty
     if(head == NULL)
     {
         printf("List already empty\n\n");
         return;
     }
+
+    //checks to see if head needs deleted and deletes from front of list
     current = head;
     while(current->value == value)
     {
@@ -123,10 +89,13 @@ void deleteAll(int value)
         free(old);
         current = head;
     }
+
+    //cycles through non-head nodes to check if they should be deleted
     while(current != NULL)
     {
         while(current->next != NULL && current->next->value == value)
         {
+            //steps around node to delete it
             struct node *old = current->next;
             current->next = current->next->next;
             free(old);
@@ -139,15 +108,19 @@ void deleteAll(int value)
 //search for node with specific value
 void search(int value)
 {
+    //cycles through list to find node being searched for
     current = head;
     while(current->next != NULL)
     {
+        //prints desired node
         if(current->value == value)
         {
             printf("Node found: %d %d %d\n", current->reading_date,current->reading_time,current->value);
         }
         current = current->next;
     }
+
+    //checks the last node and prints it if applicable
     if(current->value == value)
     {
         printf("Node found: %d %d %d\n", current->reading_date,current->reading_time,current->value);
@@ -197,56 +170,44 @@ void average()
 
 int main()
 {
+    //creates neccessary variables
     int input, reading_date, reading_time, value, deleteType, printType;
+
+    /*Dummy Data:
     insert(1,2,3);
     insert(4,5,6);
     insert(4,5,3);
     insert(7,8,3);
     insert(7,8,9);
-    insert(1,0,3);
+    insert(1,0,3);*/
+
     while(input != 5)
     {
+        //prints menu
         printf("1-Insert\n");
         printf("2-Delete\n");
         printf("3-Search\n");
         printf("4-Print\n");
         printf("5-Exit\n");
+        //asks for choice
         printf("Your Choice: ");
         scanf("%d", &input);
         printf("\n");
         if(input == 1)
         {
-            // printf("1-Insert at Start\n");
-            // printf("2-Insert at End\n");
-            // printf("3-Insert at Key\n");
-            // printf("Your Choice: ");
-            // scanf("%d", &insertType);
-            // printf("\n");
+            //Insert
             printf("Reading Date: ");
             scanf("%d", &reading_date);
             printf("Reading Time: ");
             scanf("%d", &reading_time);
             printf("Value: ");
             scanf("%d", &value);
-            // if(insertType == 1)
-            // {
-            //     insert(key, data);
-            // }
-            // else if(insertType == 2)
-            // {
-            //     insertEnd(key, data);
-            // }
-            // else if(insertType == 3)
-            // {
-            //     printf("\nLocation: ");
-            //     scanf("%d", &location);
-            //     insertAt(key, data, location);
-            // }
             insert(reading_date,reading_time,value);
             printf("\n");
         }
         else if(input == 2)
         {
+            //Delete
             printf("1-Delete one entry\n");
             printf("2-Delete multiple entries\n");
             printf("Your Choice: ");
@@ -254,6 +215,7 @@ int main()
             printf("\n");
             if(deleteType == 1)
             {
+                //Delete One Node
                 printf("Reading Date: ");
                 scanf("%d", &reading_date);
                 printf("Reading Time: ");
@@ -263,6 +225,7 @@ int main()
             }
             else if(deleteType == 2)
             {
+                //Delete Multiple Nodes
                 printf("Value: ");
                 scanf("%d", &value);
                 printf("\n");
@@ -271,6 +234,7 @@ int main()
         }
         else if(input == 3)
         {
+            //Search
             printf("Value: ");
             scanf("%d", &value);
             printf("\n");
@@ -278,6 +242,7 @@ int main()
         }
         else if(input == 4)
         {
+            //Print
             printf("1-Print List\n");
             printf("2-Print Length\n");
             printf("3-Print Average\n");
@@ -286,19 +251,20 @@ int main()
             printf("\n");
             if(printType == 1)
             {
+                //Print List
                 print();
             }
             else if(printType == 2)
             {
+                //Print Length
                 length();
             }
             else if(printType == 3)
             {
+                //Print Average
                 average();
             }
         }
     }
     return 0;
 }
-
-//cc Assignment1.c && ./a.out
