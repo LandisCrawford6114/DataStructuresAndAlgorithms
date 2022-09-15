@@ -110,14 +110,33 @@ void delete(int reading_date, int reading_time)
 //delete all nodes with specific value
 void deleteAll(int value)
 {
-    struct node *next = head->next;
+    struct node *next;
+    if(head->next != NULL)
+    {
+        next = head->next;
+    }
+    else
+    {
+        next = NULL;
+    }
     current = head;
     while(current->value == value)
     {
         struct node *old = head;
-        head = head->next;
+        if(head->next != NULL)
+        {
+            head = head->next;
+        }
+        else
+        {
+            head = NULL;
+            return;
+        }
         current = head;
-        next = head->next;
+        if(next != NULL)
+        {
+            next = head->next;
+        }
         free(old);
     }
     while(next != NULL)
