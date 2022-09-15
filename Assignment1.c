@@ -110,52 +110,30 @@ void delete(int reading_date, int reading_time)
 //delete all nodes with specific value
 void deleteAll(int value)
 {
-    struct node *next;
-    if(head->next != NULL)
+    if(head == NULL)
     {
-        next = head->next;
-    }
-    else
-    {
-        next = NULL;
+        printf("List already empty\n\n");
+        return;
     }
     current = head;
     while(current->value == value)
     {
         struct node *old = head;
-        if(head->next != NULL)
-        {
-            head = head->next;
-        }
-        else
-        {
-            head = NULL;
-            return;
-        }
-        current = head;
-        if(next != NULL)
-        {
-            next = head->next;
-        }
+        head = head->next;
         free(old);
+        current = head;
     }
-    while(next != NULL)
+    while(current != NULL)
     {
-        while(next != NULL && next->value == value)
+        while(current->next != NULL && current->next->value == value)
         {
-            struct node *old = next;
-            current->next = next->next;
-            if(next->next != NULL)
-            {
-                next = next->next;
-            }
+            struct node *old = current->next;
+            current->next = current->next->next;
             free(old);
         }
-        current = next;
-        next = next->next;
+        current = current->next;
     }
-    printf("Entries deleted\n\n");
-    
+    printf("Entries Deleted\n\n");
 }
 
 //search for node with specific value
