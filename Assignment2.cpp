@@ -112,6 +112,7 @@ class Server
         void setCurrentTask(Task *task)
         {
             current_task = task;
+            setTransactionTime();
         }
 
         const int getCurrentTaskNumber()
@@ -156,7 +157,6 @@ class ServerList{
                     return i;
                 }
             }
-            printf("no free servers");
             return -1;
         }
 
@@ -200,7 +200,7 @@ class ServerList{
 class taskQueue
 {
     public:
-        Task *head = NULL;
+        Task *head = new Task(-1,-1,-1,-1);
 
         const bool isEmptyQueue()
         {
@@ -248,21 +248,36 @@ class taskQueue
         void pop()
         {
             Task *cycle = head;
-            while(cycle->next != NULL)
+            Task *nextCycle = head->next;
+            if(nextCycle->next == NULL)
             {
-                cycle = cycle->next;
+                free(nextCycle);
+                head->next = NULL;
             }
-            free(cycle);
+            else
+            {
+                while(nextCycle->next != NULL)
+                {
+                    cycle = nextCycle;
+                    nextCycle = nextCycle->next;
+                }
+                free(nextCycle);
+                cycle->next = NULL;
+            }
         }
 
         void updateWaitTime()
         {
-            Task *cycle = head->next;
-            while(cycle->next != NULL)
+            if(head->next != NULL)
             {
-                cycle->waiting_time++;
+                Task *cycle = head->next;
+                while(cycle->next != NULL)
+                {
+                    cycle->incrementWaitingTime();
+                    cycle = cycle->next;
+                }
+                cycle->incrementWaitingTime();
             }
-            cycle->waiting_time++;
         }
 };
 
@@ -302,10 +317,10 @@ int main()
     for (int tCo = 1; tCo <= simTime; tCo++) {
 		cout << "Time: " << tCo << endl;
 		// 1- Update all servers transaction time (decrement by 1)
-		sList.updateServers();
-		// 2- Update waiting time (increment by 1) of all tasks in the queue
-		tQueue.updateWaitTime();
-		// 3- Check if it is time for arrival of tasks
+	 	sList.updateServers();
+	    // 2- Update waiting time (increment by 1) of all tasks in the queue
+	 	tQueue.updateWaitTime();
+	 	// 3- Check if it is time for arrival of tasks
 		if (tCo % aTimeRate == 0) {
 			// Generate random transaction time
 			int r = rand();
@@ -314,7 +329,7 @@ int main()
 			Task *t = new Task(taskNu,tCo, 0, r);
 			tQueue.push(t);
 			cout << "New task " << taskNu << " arrived at time " << tCo << " with transaction time of " << r << "\n";
-			++taskNu;
+            taskNu++;
 		}
 		// 4- Check if a server is free and tasks' queue is non empty to push a task
 		int sID = sList.getFreeServerID();
