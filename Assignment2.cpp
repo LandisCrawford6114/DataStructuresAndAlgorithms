@@ -12,7 +12,7 @@ class Task
         int arrival_time;
         int waiting_time;
         int transaction_time;
-        struct Task *next;
+        Task *next;
 
         void setTaskInfo(int tn, int aTime, int wTime, int tTime)
         {
@@ -64,13 +64,13 @@ class Task
 class Server 
 {
     public:
-        Task current_task;
+        Task *current_task;
         string status;
         int transaction_time;
 
         bool isFree()
         {
-            if(status = "Free")
+            if(status == "Free")
             {
                 return true;
             }
@@ -92,7 +92,7 @@ class Server
 
         void setTransactionTime()
         {
-            transaction_time = current_task.transaction_time;
+            transaction_time = current_task->transaction_time;
         }
 
         const int getRemainingTransactionTime()
@@ -109,29 +109,29 @@ class Server
             transaction_time--;
         }
 
-        void setcurrentTask(Task task)
+        void setCurrentTask(Task *task)
         {
             current_task = task;
         }
 
-        const int getcurrentTaskNumber()
+        const int getCurrentTaskNumber()
         {
-            return current_task.task_number;
+            return current_task->task_number;
         }
 
         const int getCurrentTaskArrivalTime()
         {
-            return current_task.arrival_time;
+            return current_task->arrival_time;
         }
 
         const int getCurrentTaskWaitingTime()
         {
-            return current_task.waiting_time;
+            return current_task->waiting_time;
         }
 
         const int getCurrentTaskTransactionTime()
         {
-            return current_task.transaction_time;
+            return current_task->transaction_time;
         }
 
         Server()
@@ -140,19 +140,193 @@ class Server
         }
 };
 
-class serverList
-{
+class ServerList{
     public:
+    
+        Server **servers;
         int numOfServers;
-        Server **serverList;
+        // Server servers[numOfServers]={}
 
+        const int getFreeServerID()
+        {
+            for(int i=0;i<numOfServers;i++)
+            {
+                if(servers[i]->isFree())
+                {
+                    return i;
+                }
+            }
+            printf("no free servers");
+            return -1;
+        }
 
+        const int getNumberOfBusyServers()
+        {
+            int count = 0;
+            for(int i=0;i<numOfServers;i++)
+            {
+                if(!servers[i]->isFree())
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        void setServerBusy(int serverIndex,Task *task)
+        {
+            servers[serverIndex]->setCurrentTask(task);
+        }
+
+        void updateServers()
+        {
+            for(int i=0;i<numOfServers;i++)
+            {
+                servers[i]->decreaseTransactionTime();
+            }
+        }
+
+        ServerList(int serverCount) 
+        {
+            numOfServers=serverCount;
+            servers=new Server*[serverCount];
+            for(int i=0;i<serverCount;i++)
+            {
+                servers[i]=new Server();
+            }
+        }
 };
 
 class taskQueue
 {
     public:
-        struct Task *head;
+        Task *head = NULL;
 
+        const bool isEmptyQueue()
+        {
+            if(head->next == NULL)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
+        const bool isFullQueue()
+        {
+            return false;
+        }
+
+        void initializeQueue()
+        {
+
+        }
+
+        Task* front()
+        {
+            Task *cycle = head;
+            while(cycle->next != NULL)
+            {
+                cycle = cycle->next;
+            }
+            return cycle;
+        }
+
+        Task* back()
+        {
+            return head->next;
+        }
+
+        void push(Task *task)
+        {
+            task->next = head->next;
+            head->next = task;
+        }
+
+        void pop()
+        {
+            Task *cycle = head;
+            while(cycle->next != NULL)
+            {
+                cycle = cycle->next;
+            }
+            free(cycle);
+        }
+
+        void updateWaitTime()
+        {
+            Task *cycle = head->next;
+            while(cycle->next != NULL)
+            {
+                cycle->waiting_time++;
+            }
+            cycle->waiting_time++;
+        }
 };
+
+int main()
+{
+	int nus, nut, tTimeL, tTimeU, aTimeRate, simTime;
+
+	taskQueue tQueue;
+	
+	cout << "Welcome to the tasks' simulator\n\n";
+
+	cout << "Enter number of servers:";
+	cin >> nus;
+	ServerList sList(nus);
+	
+	cout << "Enter number of tasks:";
+	cin >> nut;
+
+	cout << "For transaction time, enter the range's lower value:";
+	cin >> tTimeL;
+
+	cout << "For transaction time, enter the range's upper value:";
+	cin >> tTimeU;
+
+	int oldRange = (RAND_MAX - 0);
+	int newRange = (tTimeU - tTimeL);
+
+	cout << "Enter task's arrival time rate:";
+	cin >> aTimeRate;
+
+	cout << "Enter total time of simulation:";
+	cin >> simTime;
+
+	srand(10);
+	int taskNu = 1;
+
+    for (int tCo = 1; tCo <= simTime; tCo++) {
+		cout << "Time: " << tCo << endl;
+		// 1- Update all servers transaction time (decrement by 1)
+		sList.updateServers();
+		// 2- Update waiting time (increment by 1) of all tasks in the queue
+		tQueue.updateWaitTime();
+		// 3- Check if it is time for arrival of tasks
+		if (tCo % aTimeRate == 0) {
+			// Generate random transaction time
+			int r = rand();
+			r = (((r-0) * newRange) / oldRange) + tTimeL;
+			// Create a new task
+			Task *t = new Task(taskNu,tCo, 0, r);
+			tQueue.push(t);
+			cout << "New task " << taskNu << " arrived at time " << tCo << " with transaction time of " << r << "\n";
+			++taskNu;
+		}
+		// 4- Check if a server is free and tasks' queue is non empty to push a task
+		int sID = sList.getFreeServerID();
+		if (sID != -1) {
+			if (tQueue.isEmptyQueue() == false) {
+				Task *t = tQueue.front();
+				sList.setServerBusy(sID, t);
+				tQueue.pop();
+				cout << "Task " << t->getTaskNumber() << " is admitted to server " << sID << "\n";
+			}
+		}
+	}
+
+    return 0;
+}
