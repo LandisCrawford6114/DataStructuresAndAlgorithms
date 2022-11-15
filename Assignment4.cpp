@@ -31,55 +31,56 @@ Node* insertNode(Node* root, int key){
 	return root;
 }
 
-void deleteNode(Node* root, int key)
+Node* deleteNode(Node* root, int key)
 {
-    Node* current = NULL;
-    Node* last == NULL;
-    if(root->info == key)
+    if(root == NULL)
     {
-        current = root;
+        return root;
     }
-    else
+    else if(key < root->info && root->left != NULL)
     {
-        last = root;
-        if(key < last->info && last->left != NULL)
+        root->left = deleteNode(root->left, key);
+    }
+    else if(key > root->info && root->right != NULL)
+    {
+        root->right = deleteNode(root->right, key);
+    }
+    else if(key == root->info)
+    {
+        if(root->right == NULL && root->left == NULL)
         {
-            current = last->left;
+            return NULL;
         }
-        else if(key > last->info && last->right != NULL)
+        else if(root->left == NULL)
         {
-            current = last->right;
+            Node* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right == NULL)
+        {
+            Node* temp = root->left;
+            free(root);
+            return temp;
         }
         else
         {
-            printf("node does not exist");
-            return;
-        }
-        while(current->info != key)
-        {
-            if(key < current->info && current->left != NULL)
+            Node* temp = root->left;
+            while(temp->right != NULL)
             {
-                last = current;
-                current = current->left;
+                temp = temp->right;
             }
-            else if(key > current->info && current->right != NULL)
-            {
-                last = current;
-                current = current->right;
-            }
-            else
-            {
-                printf("node does not exist");
-                return;
-            }
-        }
-    }
-    
-    if(current->left == NULL && current->right == NULL)
-    {
 
+            root->info = temp->info;
+
+            root->left = deleteNode(root->left,temp->info);
+        }
     }
+    return root;
+
 }
+
+
 
 void inorder(Node* root){
 	if (root == NULL)
@@ -113,19 +114,56 @@ void postorder(Node* root){
 int main(){
     Node* tree=NULL;
 
-    tree=insertNode(tree, 5);
-    tree=insertNode(tree, 3);
-    tree=insertNode(tree, 1);
-    tree=insertNode(tree, 7);
-    tree=insertNode(tree, 7);
+    int numbers [21] = {70,60,92,50,63,82,94,40,68,72,88,98,20,45,65,75,85,96,35,80,78};
+    for(int i = 0; i < 21; i++)
+    {
+        tree=insertNode(tree, numbers[i]);
+    }
+    while("true")
+    {
+        printf("1- Insert a new node\n");
+        printf("2- Print the tree using inorder traversal\n");
+        printf("3- Print the tree using preorder traversal\n");
+        printf("4- Print the tree using postorder traversal\n");
+        printf("5- Delete a node\n");
 
+        int selection;
+        scanf("%d", &selection);
+        if(selection == 1)
+        {
+            int info;
+            printf("info? ");
+            scanf("%d", &info);
+            insertNode(tree, info);
+            printf("\n");
+        }
+        else if(selection == 2)
+        {
+            inorder(tree);
+            printf("\n");
+        }
+        else if(selection == 3)
+        {
+            preorder(tree);
+            printf("\n");
+        }
+        else if(selection == 4)
+        {
+            postorder(tree);
+            printf("\n");
+        }
+        else if(selection == 5)
+        {
+            int info;
+            printf("info? ");
+            scanf("%d", &info);
+            deleteNode(tree, info);
+            printf("\n");
+        }
+        else if (selection == 6)
+        {
+            return 0;
+        }
+    }
 
-    cout<<"inorder: ";
-    inorder(tree);
-    cout<<"\npreorder: ";
-    preorder(tree);
-    cout<<"\npostorder: ";
-    postorder(tree);
-    cout<<endl;
-    return 0;
 }
