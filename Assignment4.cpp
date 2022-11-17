@@ -2,7 +2,8 @@
 
 using namespace std;
 
-class Node{
+class Node
+{
 public:
     Node* left;
     Node* right;
@@ -12,7 +13,9 @@ public:
     void postorder(Node* root);
 };
 
-Node* insertNode(Node* root, int key){
+//insert node
+Node* insertNode(Node* root, int key)
+{
 	// if the root is null, create a new one
 	if (root == NULL){
         Node* n = new Node;
@@ -31,6 +34,7 @@ Node* insertNode(Node* root, int key){
 	return root;
 }
 
+//code inspired by https://www.geeksforgeeks.org/deletion-in-binary-search-tree/
 Node* deleteNode(Node* root, int key)
 {
     if(root == NULL)
@@ -81,8 +85,9 @@ Node* deleteNode(Node* root, int key)
 }
 
 
-
-void inorder(Node* root){
+//print out inorder traversal
+void inorder(Node* root)
+{
 	if (root == NULL)
     {
         return;
@@ -91,7 +96,10 @@ void inorder(Node* root){
 	printf("%d ", root->info);
 	inorder(root->right);
 }
-void preorder(Node* root){
+
+//print out preorder traversal
+void preorder(Node* root)
+{
 	if (root == NULL)
     {
         return;
@@ -100,7 +108,10 @@ void preorder(Node* root){
     preorder(root->left);
 	preorder(root->right);
 }
-void postorder(Node* root){
+
+//print out postorder traversal
+void postorder(Node* root)
+{
 	if (root == NULL)
     {
         return;
@@ -111,14 +122,18 @@ void postorder(Node* root){
 }
 
 
-int main(){
+int main()
+{
     Node* tree=NULL;
 
+    /*//for testing
     int numbers [21] = {70,60,92,50,63,82,94,40,68,72,88,98,20,45,65,75,85,96,35,80,78};
     for(int i = 0; i < 21; i++)
     {
         tree=insertNode(tree, numbers[i]);
     }
+    */    
+
     while("true")
     {
         printf("1- Insert a new node\n");
@@ -126,6 +141,7 @@ int main(){
         printf("3- Print the tree using preorder traversal\n");
         printf("4- Print the tree using postorder traversal\n");
         printf("5- Delete a node\n");
+        printf("6- End code\n");
 
         int selection;
         scanf("%d", &selection);
@@ -139,16 +155,19 @@ int main(){
         }
         else if(selection == 2)
         {
+            printf("inorder: ");
             inorder(tree);
             printf("\n");
         }
         else if(selection == 3)
         {
+            printf("preorder: ");
             preorder(tree);
             printf("\n");
         }
         else if(selection == 4)
         {
+            printf("postorder: ");
             postorder(tree);
             printf("\n");
         }
@@ -165,5 +184,4 @@ int main(){
             return 0;
         }
     }
-
 }
