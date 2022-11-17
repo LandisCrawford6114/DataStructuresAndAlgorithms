@@ -18,7 +18,8 @@ public:
 Node* insertNode(Node* root, int key)
 {
 	// if the root is null, create a new one
-	if (root == NULL){
+	if (root == NULL)
+    {
         Node* n = new Node;
         n->left=NULL;
         n->right=NULL;
@@ -26,11 +27,17 @@ Node* insertNode(Node* root, int key)
         return n;
     }
     //else, insert the node
-	else if (key < root->info){
+	else if (key < root->info)
+    {
 		root->left = insertNode(root->left, key);
     }
-	else{
+	else if (key > root->info)
+    {
 		root->right = insertNode(root->right, key);
+    }
+    else 
+    {
+        printf("node already exists");
     }
 	return root;
 }
@@ -81,6 +88,10 @@ Node* deleteNode(Node* root, int key)
             root->left = deleteNode(root->left,temp->info);
         }
     }
+    else// if(root->left == NULL && root->right == NULL)
+    {
+        printf("Node does not exist");
+    }
     return root;
 
 }
@@ -127,13 +138,13 @@ int main()
 {
     Node* tree=NULL;
 
-    /*//for testing
+    //for testing
     int numbers [21] = {70,60,92,50,63,82,94,40,68,72,88,98,20,45,65,75,85,96,35,80,78};
     for(int i = 0; i < 21; i++)
     {
         tree=insertNode(tree, numbers[i]);
     }
-    */    
+    
 
     while("true")
     {
@@ -152,7 +163,6 @@ int main()
             printf("info? ");
             scanf("%d", &info);
             insertNode(tree, info);
-            printf("\n");
         }
         else if(selection == 2)
         {
@@ -178,7 +188,6 @@ int main()
             printf("info? ");
             scanf("%d", &info);
             deleteNode(tree, info);
-            printf("\n");
         }
         else if (selection == 6)
         {
